@@ -19,7 +19,7 @@
     </center>
 
     <script type='text/javascript'>
-      function goFullScreen(){
+      function goFullScreen()){
             var canvas = document.getElementById("canvas");
             if(canvas.requestFullScreen)
                 canvas.requestFullScreen();
@@ -101,6 +101,12 @@
       var applicationLoad = function(e) {
         Love(Module);
       }
+
+      // 🚀 TARAYICI İNDİRME MOTORUNU KİLİTLEME BARIYERI (YENİ EKLENDİ)
+      // Tarayıcının sürüklenen dosyayı bilgisayara tekrar indirmesini tamamen engeller.
+      // Veriyi doğrudan LÖVE2D motorunun içindeki 'love.filedropped' fonksiyonuna fırlatır.
+      window.addEventListener("dragover", function(e) { e.preventDefault(); }, false);
+      window.addEventListener("drop", function(e) { e.preventDefault(); }, false);
     </script>
     <script type="text/javascript" src="game.js"></script>
     <script async type="text/javascript" src="love.js" onload="applicationLoad(this)"></script>
