@@ -102,7 +102,7 @@
         Love(Module);
       }
 
-      // 🚀 TARAYICI İNDİRME MOTORUNU KİLİTLEME VE VERİ AKITMA KÖPRÜSÜ
+      // 🚀 EM-SCRIPTEN SANAL DISK SENKRONİZASYON MOTORU
       window.addEventListener("dragover", function(e) { 
           e.preventDefault(); 
       }, false);
@@ -118,27 +118,27 @@
               reader.onload = function(event) {
                   var icerik = event.target.result;
                   
-                  // WebAssembly (Emscripten) Sanal Dosya Sistemine doğrudan sızıyoruz
                   if (Module && Module.FS) {
                       var dosyaAdi = file.name.toLowerCase();
                       
-                      if (dosyaAdi.endsWith(".json")) {
-                          Module.FS.writeFile("/suruklenen.json", icerik);
-                      } else if (dosyaAdi.endsWith(".dxf")) {
-                          // Lua kodunun tam olarak aradığı 'suruklenen.dxf' dosyasını sanal diske basıyoruz!
-                          Module.FS.writeFile("/suruklenen.dxf", icerik);
-                      }
+                      // LÖVE2D web motorunun tam uygulama hafıza yolunu kilitliyoruz
+                      var savePath = "/home/web_user/.local/share/love/Profesyonel 2D CAD/";
                       
-                      // Sanal dosya yazıldıktan sonra LÖVE2D motorunu taklit ederek uyarıyoruz
-                      try {
-                          Module.ccall('love_filedropped', 'void', ['string'], [file.name]);
-                      } catch(err) {
-                          console.log("Dosya sanal diske yazildi. Lua butonlari ile tetiklenebilir.");
+                      // Eğer sanal klasör ağacı henüz oluşmadıysa güvenli bir şekilde inşa et
+                      try { Module.FS.mkdirTree(savePath); } catch(err) {}
+                      
+                      if (dosyaAdi.endsWith(".json")) {
+                          // Doğrudan Lua kodunun `love.filesystem` ile aradığı yere yazıyoruz
+                          Module.FS.writeFile(savePath + "cad_proje_kayit.json", icerik);
+                          alert("JSON Projesi Sanal Diske Yazıldı! Ekrana basmak için LOAD JSON butonuna tıklayın.");
+                      } else if (dosyaAdi.endsWith(".dxf")) {
+                          // Doğrudan Lua kodunun aradığı "suruklenen.dxf" ismini tam yerine basıyoruz
+                          Module.FS.writeFile(savePath + "suruklenen.dxf", icerik);
+                          alert("DXF Çizimi Sanal Diske Yazıldı! Ekrana basmak için IMPORT DXF butonuna tıklayın.");
                       }
                   }
               };
               
-              // Dosyayı saf metin olarak oku (DXF/JSON tabanlı CAD verileri için)
               reader.readAsText(file);
           }
       }, false);
