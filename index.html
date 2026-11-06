@@ -104,37 +104,6 @@
     </script>
     <script type="text/javascript" src="game.js"></script>
     <script async type="text/javascript" src="love.js" onload="applicationLoad(this)"></script>
-
-    <!-- ========================================================================= -->
-    <!-- WASM DRAG & DROP (SÜRÜKLE - BIRAK) DOSYA ENJEKTÖRÜ                        -->
-    <!-- ========================================================================= -->
-    <script type="text/javascript">
-      window.addEventListener("dragover", function(e) {
-        e.preventDefault();
-      }, false);
-
-      window.addEventListener("drop", function(e) {
-        e.preventDefault();
-        var files = e.dataTransfer.files;
-        if (files.length > 0) {
-          var file = files[0];
-          if (file.name.toLowerCase().endsWith(".dxf")) {
-            var reader = new FileReader();
-            reader.onload = function(evt) {
-              var icerik = evt.target.result;
-              var fsObj = (typeof FS !== 'undefined') ? FS : (typeof Module !== 'undefined' ? Module.FS : null);
-              if (fsObj) {
-                try { fsObj.writeFile('suruklenen_dosya.dxf', icerik); } catch(err){}
-                try { fsObj.writeFile('/suruklenen_dosya.dxf', icerik); } catch(err){}
-                console.log("DXF başarıyla sanal diske bırakıldı!");
-              }
-            };
-            reader.readAsText(file);
-          }
-        }
-      }, false);
-    </script>
-
     <footer>
       <p>Built with <a href="https://github.com/Davidobot/love.js">love.js</a> <button onclick="goFullScreen();">Go Fullscreen</button><br>Hint: Reload the page if screen is blank</p>
     </footer>
