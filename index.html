@@ -102,11 +102,46 @@
         Love(Module);
       }
 
-      // 🚀 TARAYICI İNDİRME MOTORUNU KİLİTLEME BARIYERI (YENİ EKLENDİ)
-      // Tarayıcının sürüklenen dosyayı bilgisayara tekrar indirmesini tamamen engeller.
-      // Veriyi doğrudan LÖVE2D motorunun içindeki 'love.filedropped' fonksiyonuna fırlatır.
-      window.addEventListener("dragover", function(e) { e.preventDefault(); }, false);
-      window.addEventListener("drop", function(e) { e.preventDefault(); }, false);
+      // 🚀 TARAYICI İNDİRME MOTORUNU KİLİTLEME VE VERİ AKITMA KÖPRÜSÜ
+      window.addEventListener("dragover", function(e) { 
+          e.preventDefault(); 
+      }, false);
+
+      window.addEventListener("drop", function(e) {
+          e.preventDefault();
+          
+          var files = e.dataTransfer.files;
+          if (files.length > 0) {
+              var file = files[0];
+              var reader = new FileReader();
+              
+              reader.onload = function(event) {
+                  var icerik = event.target.result;
+                  
+                  // WebAssembly (Emscripten) Sanal Dosya Sistemine doğrudan sızıyoruz
+                  if (Module && Module.FS) {
+                      var dosyaAdi = file.name.toLowerCase();
+                      
+                      if (dosyaAdi.endsWith(".json")) {
+                          Module.FS.writeFile("/suruklenen.json", icerik);
+                      } else if (dosyaAdi.endsWith(".dxf")) {
+                          // Lua kodunun tam olarak aradığı 'suruklenen.dxf' dosyasını sanal diske basıyoruz!
+                          Module.FS.writeFile("/suruklenen.dxf", icerik);
+                      }
+                      
+                      // Sanal dosya yazıldıktan sonra LÖVE2D motorunu taklit ederek uyarıyoruz
+                      try {
+                          Module.ccall('love_filedropped', 'void', ['string'], [file.name]);
+                      } catch(err) {
+                          console.log("Dosya sanal diske yazildi. Lua butonlari ile tetiklenebilir.");
+                      }
+                  }
+              };
+              
+              // Dosyayı saf metin olarak oku (DXF/JSON tabanlı CAD verileri için)
+              reader.readAsText(file);
+          }
+      }, false);
     </script>
     <script type="text/javascript" src="game.js"></script>
     <script async type="text/javascript" src="love.js" onload="applicationLoad(this)"></script>
